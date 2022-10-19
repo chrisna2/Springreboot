@@ -106,4 +106,17 @@ public class BoardRepositoryTests {
 		boardRepo.deleteById(BoardRepositoryTests.ID);
 	}
 	
+	@Test
+	@Order(6)
+	public void insertDataList() {
+		
+		for(int i = 0; i <= 200; i++) {
+			Board board = new Board();
+			board.setTitle("제옥.."+i);
+			board.setContent("내용.."+i+"..채우기");
+			board.setWriter("user0"+(i%10));
+			boardRepo.save(board);
+		}
+	}
+	
 }
