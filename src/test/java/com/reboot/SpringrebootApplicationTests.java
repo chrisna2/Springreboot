@@ -4,13 +4,18 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;import org.springframework.boot.origin.SystemEnvironmentOrigin;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import com.reboot.domain.Board;
 import com.reboot.repository.BoardRepository;
 
 @SpringBootTest
@@ -143,20 +148,33 @@ class SpringrebootApplicationTests {
 		System.out.println("----------"+count+"------------");
 	}
 	
+	//paging 기능 포함
 	//@Test
 	public void testByContentLikeOrderBy() {
 		
+		// 3개 씩 조회 , 오늘차순 정렬, bno
+		Pageable paging = PageRequest.of(0, 3, Sort.Direction.ASC, "bno");
+		
+		
+		Page<Board> pageResult1 = boardRepo.findBoardByContentContainingOrderByBnoDesc("게시물",paging);
+		System.out.println("PAGE SIZE : "+pageResult1.getSize());
+		System.out.println("TOTAL SIZE : "+pageResult1.getTotalPages());
+		System.out.println("TOTAL COUNT : "+pageResult1.getTotalElements());
+		System.out.println("NEXT : "+pageResult1.nextPageable());
+		
+		List<Board> list = pageResult1.getContent();
+		
 		count = 0;
-		boardRepo.findBoardByContentContainingOrderByBnoDesc("게시물").forEach(board -> {System.out.println(board); count++;});
+		list.forEach(board -> {System.out.println(board); count++;});
 		System.out.println("----------"+count+"------------");
 		
 		count = 0;
-		boardRepo.findBoardByContentContainingOrderByBnoAsc("게시물").forEach(board -> {System.out.println(board); count++;});
+		boardRepo.findBoardByContentContainingOrderByBnoAsc("게시물",paging).forEach(board -> {System.out.println(board); count++;});
 		System.out.println("----------"+count+"------------");
 		
 	}
 	
-	@Test
+	//@Test
 	public void testByBnoIn() {
 		
 		//Collection > List > ArrayList, Vector, LinkedList, Stack
@@ -176,6 +194,53 @@ class SpringrebootApplicationTests {
 		count = 0;
 		boardRepo.findBoardByBnoNotIn(inValue).forEach(board -> {System.out.println(board); count++;});
 		System.out.println("----------"+count+"------------");
+		
+	}
+	
+	//@Test
+	public void testQuery() {
+		
+		//Collection > List > ArrayList, Vector, LinkedList, Stack
+		//Collection > Set > HashSet, SortedSet
+		
+		count = 0;
+		boardRepo.findByTitleQuery("게시물").forEach(board -> {System.out.println(board); count++;});
+		System.out.println("----------"+count+"------------");
+		
+		count = 0;
+		boardRepo.findByContentQuery("0").forEach(board -> {System.out.println(board); count++;});
+		System.out.println("----------"+count+"------------");
+		
+		//[주의]모든 것을 조회하는 것이 아닐때 받아오는 데이터는 Collection<board> 타입이 아닌 Collection<Object[]> 배열의 형태를 취한다.
+		count = 0;
+		boardRepo.findByContentQueryOnlyBno("0").forEach(arr -> {System.out.println(Arrays.toString(arr)); count++;});
+		System.out.println("----------"+count+"------------");
+		
+		count = 0;
+		boardRepo.findByContentNativeQueryOnlyBno("0").forEach(arr -> {System.out.println(Arrays.toString(arr)); count++;});
+		System.out.println("----------"+count+"------------");
+		
+		// 3개 씩 조회 , 오늘차순 정렬, bno
+		Pageable paging = PageRequest.of(0, 10, Sort.Direction.ASC, "bno");
+		
+		
+		Page<Board> pageResult1 = boardRepo.findByPageQuery(paging);
+		System.out.println("PAGE SIZE : "+pageResult1.getSize());
+		System.out.println("TOTAL SIZE : "+pageResult1.getTotalPages());
+		System.out.println("TOTAL COUNT : "+pageResult1.getTotalElements());
+		System.out.println("NEXT : "+pageResult1.nextPageable());
+		
+		List<Board> list = pageResult1.getContent();
+		
+		count = 0;
+		list.forEach(board -> {System.out.println(board); count++;});
+		System.out.println("----------"+count+"------------");
+		
+	}
+	
+	
+	@Test
+	public void testQueryDsl() {
 		
 	}
 		

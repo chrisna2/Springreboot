@@ -34,9 +34,9 @@ public class Board {
 	private String content;
 	
 	@CreationTimestamp//insert시 생성
-	private Timestamp regDate;		//localDateTime
+	private Timestamp regDate;		//localDateTime 
 	
 	@UpdateTimestamp//update시 생성
-	private Timestamp updateDate;	//localDateTime
+	private Timestamp updateDate;	//localDateTime 
 
 }
