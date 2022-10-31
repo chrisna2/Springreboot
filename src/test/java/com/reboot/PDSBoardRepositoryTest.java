@@ -1,6 +1,8 @@
 package com.reboot;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -50,10 +52,10 @@ public class PDSBoardRepositoryTest {
 		repo.save(pds);
 	}
 	
-	@Test
-	@Transactional //org.springframework.transaction.annotation.Transactional
+	//@Test
+	//@Transactional //org.springframework.transaction.annotation.Transactional
 	//TEST 코드에서 해당 annotation을 사용할 경우 해당 트랜잭션의 처리 결과를 롤백처리 한다. 그래서 결과가 commit되지 않는 것.
-	@Commit //org.springframework.test.annotation.Commit; 이걸 추가해 줘야 해당 쿼리의 데이터가 변경된다.
+	//@Commit //org.springframework.test.annotation.Commit; 이걸 추가해 줘야 해당 쿼리의 데이터가 변경된다.
 	public void updatePdsFileTest() {
 		
 		Long fno = 1L;
@@ -71,10 +73,59 @@ public class PDSBoardRepositoryTest {
 		*/
 	}
 	
-	/**
-	 * 
-	 */
+	@Test
+	@Transactional //org.springframework.transaction.annotation.Transactional
+	//TEST 코드에서 해당 annotation을 사용할 경우 해당 트랜잭션의 처리 결과를 롤백처리 한다. 그래서 결과가 commit되지 않는 것.
+	@Commit //org.springframework.test.annotation.Commit; 이걸 추가해 줘야 해당 쿼리의 데이터가 변경된다.
 	public void testUpdateFileName2() {
+		
+		String newName = "updatedFile2.doc";
+		
+		Optional<PDSBoard> result = repo.findById(2L);
+		//Hibernate: select pdsboard0_.pid as pid1_2_0_, pdsboard0_.pname as pname2_2_0_, pdsboard0_.pwriter as pwriter3_2_0_ from tbl_pds pdsboard0_ where pdsboard0_.pid=?
+		
+		result.ifPresent(pds -> {
+			
+			System.out.println("데이터가 존제 함, Update 시작");
+			
+			PDSFile target = new PDSFile();
+			
+			target.setFno(2L); // 두번째 파일 수정
+			target.setPdsfile(newName);
+			
+			//[중요] PDSFile이 데이터는  해당 데이터는 이미 repo.findById(2L)을 통해 이미 가져온 상태임!
+			
+			int idx = pds.getFiles().indexOf(target);
+			
+			if(idx > -1) {
+				List<PDSFile> list = pds.getFiles();
+				
+				list.remove(idx);
+				list.add(target);
+				
+				pds.setFiles(list);
+			}
+			
+			/*
+			 Hibernate: 
+			 	select 
+			 		files0_.pdsno as pdsno3_3_0_, 
+			 		files0_.fno as fno1_3_0_, 
+			 		files0_.fno as fno1_3_1_, 
+			 		files0_.pdsfile as pdsfile2_3_1_ 
+			 	from tbl_pds_files files0_ 
+			 	where files0_.pdsno=?
+			
+			Hibernate: 
+				update 
+					tbl_pds_files 
+				set pdsfile=? 
+				where fno=?	
+			*/
+			repo.save(pds);
+			
+		});
+		
 		
 	}
 	
