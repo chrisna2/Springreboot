@@ -43,6 +43,7 @@ public class ProfileTest {
 			
 		});
 	}
+	
 	//@Test
 	public void testInsertProfile() {
 		
@@ -64,20 +65,47 @@ public class ProfileTest {
 	}
 	
 	
-	//@Test
+	@Test
 	public void testFetchJoin1(){
-	
+		
+		/**
+			select 
+				member0_.uid as col_0_0_, 
+				count(profile1_.fno) as col_1_0_ 
+			from tbl_member member0_ 
+				left outer join tbl_profile profile1_ on (member0_.uid=profile1_.member_uid) 
+			where 
+				member0_.uid=? 
+			group by member0_.uid
+		 */
+		
 		List<Object[]> result = memRepo.getMemberWithProfileCount("user1");
 		
 		result.forEach(arr -> {
 			System.out.println(Arrays.toString(arr));
 		});
 		
+		// Result  : [user1, 5]
+		
 	}
 	
 	@Test
 	public void testFetchJoin2(){
-		
+		/**
+		 * select 
+		 * 	member0_.uid as uid1_1_0_, 
+		 * 	profile1_.fno as fno1_4_1_, 
+		 * 	member0_.uname as uname2_1_0_, 
+		 * 	member0_.upw as upw3_1_0_, 
+		 * 	profile1_.current as current2_4_1_, 
+		 * 	profile1_.fname as fname3_4_1_, 
+		 * 	profile1_.member_uid as member_u4_4_1_ 
+		 * from tbl_member member0_ 
+		 * 	left outer join tbl_profile profile1_ 
+		 * 		on (member0_.uid=profile1_.member_uid 
+		 * 			and profile1_.current=1) 
+		 * where member0_.uid=?
+		 */
 		List<Object[]> result2 = memRepo.getMemberWithCurrentProfile("user1");
 		
 		result2.forEach(arr -> {

@@ -106,8 +106,8 @@ public class BoardRepositoryTests {
 		boardRepo.deleteById(BoardRepositoryTests.ID);
 	}
 	
-	@Test
-	@Order(6)
+	//@Test
+	//@Order(2)
 	public void insertDataList() {
 		
 		for(int i = 0; i <= 200; i++) {

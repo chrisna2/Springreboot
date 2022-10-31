@@ -28,19 +28,19 @@ class SpringrebootApplicationTests {
 	void contextLoads() {
 	}
 	
-	//@Test
+	@Test
 	public void testByTitle() {
 		boardRepo.findBoardByTitle("제옥..121").forEach(board -> System.out.println(board));
 	}
 	
-	//@Test
+	@Test
 	public void testByTitleAndWriter() {
 		boardRepo.findBoardByTitleAndWriter("제옥..121", "user02").forEach(board -> System.out.println("AND : "+board));
 		boardRepo.findBoardByTitleOrWriter("제옥..121", "user02").forEach(board -> System.out.println("OR : "+board));
 	}
 	
 	
-	//@Test
+	@Test
 	public void testByTimestampBetween() {
 		
 		//이 처리를 해 줘야 함
@@ -56,7 +56,7 @@ class SpringrebootApplicationTests {
 	
 	private int count;
 	
-	//@Test
+	@Test
 	public void testByBnoRange() {
 		
 		//이 처리를 해 줘야 함
@@ -86,7 +86,7 @@ class SpringrebootApplicationTests {
 		
 	}
 	
-	//@Test
+	@Test
 	public void testByRegDataRange() {
 		
 		//이 처리를 해 줘야 함
@@ -110,7 +110,7 @@ class SpringrebootApplicationTests {
 		
 	}	
 	
-	//@Test
+	@Test
 	public void testByContentNullCheck() {
 		
 		//DB 안에서 Null 인 값이다. ("") 공백 값은 체크 안함  
@@ -127,7 +127,7 @@ class SpringrebootApplicationTests {
 	}
 	
 	
-	//@Test
+	@Test
 	public void testByContentLike() {
 		
 		//단순 Like의 값이다. % % 처리를 하지 않는다.
@@ -149,7 +149,7 @@ class SpringrebootApplicationTests {
 	}
 	
 	//paging 기능 포함
-	//@Test
+	@Test
 	public void testByContentLikeOrderBy() {
 		
 		// 3개 씩 조회 , 오늘차순 정렬, bno
@@ -174,7 +174,7 @@ class SpringrebootApplicationTests {
 		
 	}
 	
-	//@Test
+	@Test
 	public void testByBnoIn() {
 		
 		//Collection > List > ArrayList, Vector, LinkedList, Stack
@@ -197,7 +197,7 @@ class SpringrebootApplicationTests {
 		
 	}
 	
-	//@Test
+	@Test
 	public void testQuery() {
 		
 		//Collection > List > ArrayList, Vector, LinkedList, Stack
