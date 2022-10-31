@@ -73,7 +73,7 @@ public class ProfileTest {
 				member0_.uid as col_0_0_, 
 				count(profile1_.fno) as col_1_0_ 
 			from tbl_member member0_ 
-				left outer join tbl_profile profile1_ on (member0_.uid=profile1_.member_uid) 
+				"left outer join" tbl_profile profile1_ on (member0_.uid=profile1_.member_uid) 
 			where 
 				member0_.uid=? 
 			group by member0_.uid
@@ -101,7 +101,7 @@ public class ProfileTest {
 		 * 	profile1_.fname as fname3_4_1_, 
 		 * 	profile1_.member_uid as member_u4_4_1_ 
 		 * from tbl_member member0_ 
-		 * 	left outer join tbl_profile profile1_ 
+		 * 	"left outer join" tbl_profile profile1_ 
 		 * 		on (member0_.uid=profile1_.member_uid 
 		 * 			and profile1_.current=1) 
 		 * where member0_.uid=?

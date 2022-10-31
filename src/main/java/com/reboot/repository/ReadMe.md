@@ -31,15 +31,92 @@
 > 2) 양방향 참조 : 양쪽 클래스 모두 다른 클래스의 인스턴스를 참조하도록 설정
 
 - 작성 예제의 개요 
-	- 회원과 프로필 사진들의 관계 : 일대다 - 다대일 - 단방향 : 회원(1) <- 프로필사진(Many) 
-	- 자료실 첨부 파일의 관계 : 일대다 - 다대일 - 단방향 : 자료실자료(1) -> 첨부파일(Many) 
+	- 회원과 프로필 사진들의 관계 : 일대다 - 다대일 - 단방향 : 회원(1) <- **프로필사진(Many)**
+	- 자료실 첨부 파일의 관계 : 일대다 - 다대일 - 단방향 : 자료실자료(1) -> **첨부파일(Many)** 		
 	- 게시물과 댓글의 관계 : 일대다 - 다대일 - 단방향 : 게시물(1) <-> 댓글(Many) 
 	
 ### [1] 회원과 프로필 사진들의 관계 : 일대다 - 다대일 - 단방향 : 회원(1) <- 프로필사진(Many) 
 
-
+	1. 방향을 설정하려는 엔티티에 방향을 설정한다 : **프로필사진(Profile.java)**
+	```java
+		@Getter
+		@Setter
+		@ToString(exclude = "member")//멤버는 제오 시킴
+		@Entity
+		@Table(name="tbl_profile")
+		@EqualsAndHashCode(of="fno")
+		public class Profile {
+			
+			@Id
+			@GeneratedValue(strategy = GenerationType.IDENTITY)
+			private Long fno;
+			
+			private String fname;
+			
+			private boolean current;
+			
+			/* 단방향 설정 프로핑에서 회원으로 접근만 가능 */
+			@ManyToOne // 프로파일 Many : 멤버 One | 프로필 -> 멤버 
+			private Member member;
+		
+		}
+	```
 
 ### [2] 자료실 첨부 파일의 관계 : 일대다 - 다대일 - 단방향 : 자료실자료(1) -> 첨부파일(Many) 
+	1. 방향을 설정하려는 엔티티에 방향을 설정한다 : **자료실자료(PDSBoard.java)**  
+	```java
+		@Getter
+		@Setter
+		@ToString(exclude = "files")
+		@Entity
+		@Table(name="tbl_pds")
+		@EqualsAndHashCode(of="pid")
+		public class PDSBoard {
+			
+			@Id
+			@GeneratedValue(strategy = GenerationType.IDENTITY)
+			private Long pid;
+			
+			private String pname;
+			
+			private String pwriter;
+			
+			@OneToMany 
+			// 자료 -> 첩부파일 | 자료 : 1 - 첨부파일 : Many 
+			@JoinColumn(name="pdsno") 
+			//pdsno라는 신규 컬럼이 PDSFile에 생성되고 이는 pdsfile의 fno가 들어 가게 된다. 
+			//이걸 안하면 의도와 다르게 연관 테이블이 또 생성되게 됨
+			private List<PDSFile> files;
+		
+		}			
+	```
+	
+	2. 영속성 전의
+		- 영속성 전의 : 처리하려는 엔티티 객체의 상태에 따라서 종속적인 객체들의 영속성도 같이 처리되는 것
+			예시) 날짜와 일정의 관계 : 특정한 날짜가 데이터 베이스에서 사라지면 해당 날짜에 속하는 일정도 같이 사라져야 한다.
+		- jpa에서 엔티티들의 기본적으로 메모리 상의 관계 날짜객체가 사라지면 일정객체도 같이 삭제될 필요가 있음
+		- 부모 앤티티나 자식 엔티티의 상태 변화가 자신과 관련있는 엔티티에 영향을 주는 것을 의미
+	
+		즉 테이블의 조인으로 묶여 있는경우 해당 조인에 종속된 자식 테이블의 데이터도 같이 처리되어야 한다.
+		
+		- 영속성 전의 Options 
+			1) **ALL : 부모테이블의 모든 변경(CRUD)에 대하여 자식테이블의 전의**  
+			2) PRESIST : 저장 시에만 전의 
+			3) MERGE : 병합 시에만 전의
+			4) REMOVE : 삭제 시에만 전의
+			5) REFRESH : 엔티티 매니저의 refresh() 호출 시 전의
+			6) DETACH : 부모 엔티티가 detach되면 자식 엔티티 역시 detach  
+			
+		- 사용방법 
+		```java
+			@OneToMany(cascade = CascadeType.ALL)
+			@OneToMany(cascade = CascadeType.PERSIST)
+			@OneToMany(cascade = CascadeType.MERGE)
+			@OneToMany(cascade = CascadeType.REMOVE)
+			@OneToMany(cascade = CascadeType.REFRESH)
+			@OneToMany(cascade = CascadeType.DETACH)
+		```
+				
 ### [3] 게시물과 댓글의 관계 : 일대다 - 다대일 - 단방향 : 게시물(1) <-> 댓글(Many) 
 
 ## 2. 단방향, 양방향 관계의 이해
