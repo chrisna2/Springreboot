@@ -71,4 +71,12 @@ public class PDSBoardRepositoryTest {
 		*/
 	}
 	
+	/**
+	 * 
+	 */
+	public void testUpdateFileName2() {
+		
+	}
+	
+	
 }
