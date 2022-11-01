@@ -15,7 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-@Table(name="tbl_pdsFiles")
+@Table(name="tbl_pdsfiles")
 @EqualsAndHashCode(of="fno")
 public class PDSFile {
 	

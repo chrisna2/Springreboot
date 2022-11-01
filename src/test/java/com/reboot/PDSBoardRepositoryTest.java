@@ -169,9 +169,9 @@ public class PDSBoardRepositoryTest {
 		
 	}
 	
-	
+	//자료와 첨부파일의 수를 자료 번호의 역순으로 출력
 	@Test
-	public void countPdsDataSumTest() {
+	public void viewSummery() {
 		repo.getSummery().forEach(arr -> {
 			System.out.println(Arrays.toString(arr));
 		});

@@ -41,13 +41,23 @@ public interface PDSBoardRepository extends CrudRepository<PDSBoard, Long>{
 			
 	 */
 	
-	
+	/*
 	@Query("SELECT p, count(f) "
 			+ "FROM PDSBoard p "
 				+ "LEFT OUTER JOIN p.files f "
 			+ "WHERE p.pid > 0 "
 			+ "GROUP BY p "
 			+ "ORDER BY pid DESC ")
+	*/
+	
+	@Query(value = 	
+		"SELECT p.pid, p.pname, p.pwriter, COUNT(f.fno) "+ 
+		"FROM tbl_pds p "+ 
+			"LEFT OUTER JOIN tbl_pdsfiles f "+ 
+			"ON f.pdsno = p.pid "+ 
+		"WHERE p.pid > 0 "+
+		"GROUP BY p.pid "+
+		"ORDER BY p.pid DESC" , nativeQuery = true)
 	public List<Object[]> getSummery();
 	
 	/* 
@@ -83,7 +93,19 @@ public interface PDSBoardRepository extends CrudRepository<PDSBoard, Long>{
 		GROUP BY p.pid
 		ORDER BY p.pid DESC ;
 		
+		-> 이걸 사용하게 될 경우. nativeQuery 옵션 실행
+		
+		@Query(value = 	
+		"SELECT p.pid, p.pname, p.pwriter, COUNT(f.fno) "+ 
+		"FROM tbl_pds p "+ 
+			"LEFT OUTER JOIN tbl_pds_files f "+ 
+			"ON f.pdsno = p.pid "+ 
+		"WHERE p.pid > 0 "+
+		"GROUP BY p.pid "+
+		"ORDER BY p.pid DESC" , nativeQuery = true)
+				
 		-----------------------------------------
+		
 		
 		hibernate 쿼리와
 		
