@@ -116,6 +116,55 @@
 			@OneToMany(cascade = CascadeType.REFRESH)
 			@OneToMany(cascade = CascadeType.DETACH)
 		```
+	
+	3. hibernate SQL 과 실제 DBMS 쿼리의 차이
+		
+		1> hibernate JPA로 적용되는 쿼리
+				
+		```java
+				@Query("SELECT p, count(f) "
+				+ "FROM PDSBoard p "
+					+ "LEFT OUTER JOIN p.files f "
+				+ "WHERE p.pid > 0 "
+				+ "GROUP BY p "
+				+ "ORDER BY pid DESC ")
+		
+		```
+		 
+		2> hibernate 로 변경되어 적용된 db 쿼리
+		 
+		```sql		 
+		 select 
+		 	pdsboard0_.pid as col_0_0_, 
+		 	count(files1_.fno) as col_1_0_, 
+		 	pdsboard0_.pid as pid1_2_, 
+		 	pdsboard0_.pname as pname2_2_, 
+		 	pdsboard0_.pwriter as pwriter3_2_ 
+		 from tbl_pds pdsboard0_ 
+		 	left outer join tbl_pds_files files1_ 
+		 	on pdsboard0_.pid=files1_.pdsno 
+		 where pdsboard0_.pid>0 
+		 group by pdsboard0_.pid 
+		 order by pid DESC
+		```
+				 
+		3> 실제 DBMS 쿼리
+				 
+		```sql
+		SELECT p.*, COUNT(f.fno) 
+		FROM TBL_PDS p 
+			LEFT OUTER JOIN tbl_pds_files f 
+			ON f.pdsno = p.pid
+		WHERE p.pid > 0 
+		GROUP BY p.pid
+		ORDER BY p.pid DESC ;
+		```
+			
+		hibernate 쿼리와 hibernate 쿼리로 변경한 실제 쿼리는
+		문법이 다르다. 이걸 확인해야 된다.
+		
+	
+	
 				
 
 ### [3] 게시물과 댓글의 관계 : 일대다 - 다대일 - 단방향 : 게시물(1) <-> 댓글(Many) 

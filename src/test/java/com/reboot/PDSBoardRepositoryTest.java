@@ -1,8 +1,10 @@
 package com.reboot;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -73,10 +75,10 @@ public class PDSBoardRepositoryTest {
 		*/
 	}
 	
-	@Test
-	@Transactional //org.springframework.transaction.annotation.Transactional
+	//@Test
+	//@Transactional //org.springframework.transaction.annotation.Transactional
 	//TEST 코드에서 해당 annotation을 사용할 경우 해당 트랜잭션의 처리 결과를 롤백처리 한다. 그래서 결과가 commit되지 않는 것.
-	@Commit //org.springframework.test.annotation.Commit; 이걸 추가해 줘야 해당 쿼리의 데이터가 변경된다.
+	//@Commit //org.springframework.test.annotation.Commit; 이걸 추가해 줘야 해당 쿼리의 데이터가 변경된다.
 	public void testUpdateFileName2() {
 		
 		String newName = "updatedFile2.doc";
@@ -126,6 +128,53 @@ public class PDSBoardRepositoryTest {
 			
 		});
 		
+	}
+	
+	//@Test
+	//@Transactional
+	public void testDeleteFile() {
+		
+		Long fno = 2L;
+		
+		int count = repo.deletePDSFile(fno);
+		
+		System.out.println("Delete Count -> "+count);
+		
+	}
+	
+	//@Test
+	public void insertDummies() {
+		
+		List<PDSBoard> list = new ArrayList<>();
+		
+		IntStream.range(1, 100).forEach(i -> {
+			PDSBoard pds = new PDSBoard();
+			pds.setPname("자료 "+i);
+			
+			PDSFile file1 =  new PDSFile();
+			file1.setPdsfile("file1.doc");
+			
+			PDSFile file2 =  new PDSFile();
+			file2.setPdsfile("file2.doc");
+			
+			pds.setFiles(Arrays.asList(file1,file2));
+			
+			System.out.println("try to save pds");
+			
+			list.add(pds);
+			
+		});
+		//한번에 데이터를 처리하게 되면 한 번에 여러개의 데이터를 입력 가능.
+		repo.saveAll(list);
+		
+	}
+	
+	
+	@Test
+	public void countPdsDataSumTest() {
+		repo.getSummery().forEach(arr -> {
+			System.out.println(Arrays.toString(arr));
+		});
 		
 	}
 	
