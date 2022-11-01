@@ -9,6 +9,9 @@ import javax.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 
 import com.reboot.domain.FreeBoard;
@@ -103,7 +106,7 @@ public class FreeBoardTest {
 	
 	@Transactional
 	@Commit
-	@Test
+	//@Test
 	public void insertReply1Way() {
 		
 		// [단방향 | 1] FreeBoardReply를 생성하고
@@ -131,6 +134,35 @@ public class FreeBoardTest {
 		 	values 
 		 		(?, ?, ?, ?, ?)
 		*/
+	}
+	
+	@Test
+	public void selectBoardTest() {
+		
+		Pageable page = PageRequest.of(0, 10, Sort.Direction.DESC, "bno");
+		
+		
+		/*
+		Hibernate: 
+			select 
+				freeboard0_.bno as bno1_2_, 
+				freeboard0_.content as content2_2_, 
+				freeboard0_.regdate as regdate3_2_, 
+				freeboard0_.title as title4_2_, 
+				freeboard0_.updatedate as updateda5_2_, 
+				freeboard0_.writer as writer6_2_ 
+			from 
+				tbl_freeboards freeboard0_ 
+			where freeboard0_.bno>? 
+			order by freeboard0_.bno desc limit ?
+		*/
+		
+		boardRepo.findByBnoGreaterThan(0L, page).forEach(freeboard -> {
+			System.out.println(freeboard);
+		});
+		
+		
+		
 	}
 	
 	
