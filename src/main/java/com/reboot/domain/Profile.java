@@ -31,5 +31,6 @@ public class Profile {
 	/* 단방향 설정 프로핑에서 회원으로 접근만 가능 */
 	@ManyToOne // 프로파일 Many : 멤버 One | 프로필 -> 멤버 
 	private Member member;
+	//자동으로 생성된 FK : member_uid
 
 }

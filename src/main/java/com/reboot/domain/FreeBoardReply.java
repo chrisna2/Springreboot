@@ -2,6 +2,7 @@ package com.reboot.domain;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -52,5 +53,7 @@ public class FreeBoardReply {
 	private FreeBoard board;
 	
 	// 해당 연관 관계에 따라 tbl_free_replies 테이블에는 board_bno라는 fk가 생성되는 것으로 확인이 가능 하다.
+	
+	//[TO-DO : 그럼 조인 forign key의 명칭을 바꾸려면 또는 자동생성이 아닌 수동생성은 어떻게 진행해야 할까?]
 	
 }

@@ -44,7 +44,7 @@ public class ProfileTest {
 		});
 	}
 	
-	//@Test
+	@Test
 	public void testInsertProfile() {
 		
 		Member member = new Member();
@@ -65,7 +65,7 @@ public class ProfileTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testFetchJoin1(){
 		
 		/**
@@ -89,7 +89,7 @@ public class ProfileTest {
 		
 	}
 	
-	@Test
+	//@Test
 	public void testFetchJoin2(){
 		/**
 		 * select 

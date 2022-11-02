@@ -20,8 +20,6 @@ import com.reboot.domain.FreeBoardReply;
 import com.reboot.repository.FreeBoardReplyRepository;
 import com.reboot.repository.FreeBoardRepository;
 
-import lombok.extern.java.Log;
-
 @SpringBootTest
 public class FreeBoardTest {
 
@@ -48,7 +46,7 @@ public class FreeBoardTest {
 	
 	@Transactional
 	@Commit
-	//@Test
+	@Test
 	public void insertReply2Way() {
 		
 		
@@ -106,7 +104,7 @@ public class FreeBoardTest {
 	
 	@Transactional
 	@Commit
-	//@Test
+	@Test
 	public void insertReply1Way() {
 		
 		// [단방향 | 1] FreeBoardReply를 생성하고
@@ -262,7 +260,7 @@ public class FreeBoardTest {
 		});
 	}
 	
-	@Test
+	//@Test
 	public void getFreeBoardPageListTest() {
 		
 		Pageable page = PageRequest.of(0, 10, Sort.Direction.DESC, "bno");

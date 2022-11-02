@@ -142,7 +142,7 @@ public class PDSBoardRepositoryTest {
 		
 	}
 	
-	//@Test
+	@Test
 	public void insertDummies() {
 		
 		List<PDSBoard> list = new ArrayList<>();
@@ -170,7 +170,7 @@ public class PDSBoardRepositoryTest {
 	}
 	
 	//자료와 첨부파일의 수를 자료 번호의 역순으로 출력
-	@Test
+	//@Test
 	public void viewSummery() {
 		repo.getSummery().forEach(arr -> {
 			System.out.println(Arrays.toString(arr));

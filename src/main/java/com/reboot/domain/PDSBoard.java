@@ -40,7 +40,8 @@ public class PDSBoard {
 	// 부모 앤티티나 자식 엔티티의 상태 변화가 자신과 관련있는 엔티티에 영향을 주는 것을 의미
 	@JoinColumn(name="pdsno") 
 	//pdsno라는 신규 컬럼이 PDSFile에 생성되고 이는 pdsfile의 fno가 들어 가게 된다. 
-	//이걸 안하면 의도와 다르게 연관 테이블이 또 생성되게 됨
+	//이걸 안하면 의도와 다르게 연관 테이블이 또 생성되게 됨 
+	//조인 컬럼의 이름도 위에와 같이 커스텀이 된다.
 	private List<PDSFile> files; //List<PDSFile> 인건 여러개의 파일이 들어 갈수 있기 때문..
 
 }

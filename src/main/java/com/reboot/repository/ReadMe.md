@@ -162,16 +162,192 @@
 			
 		hibernate 쿼리와 hibernate 쿼리로 변경한 실제 쿼리는
 		문법이 다르다. 이걸 확인해야 된다.
-		
-	
-	
-				
+					
 
 ### [3] 게시물과 댓글의 관계 : 일대다 - 다대일 - 단방향 : 게시물(1) <-> 댓글(Many) 
 
-## 2. 단방향, 양방향 관계의 이해
 
 
 
+### [4] JPA 연관 관계 설정 annotation 정리
 
-## 3. JPQL을 이용한 @Query 처리와 Fetch JOIN
+* RDB는 정규화된 테이블 2개로 다대다 관계를 표현할 수 없기 때문에 연결 테이블을 추가해서 일대다, 다대일 관계로 풀어낸다.
+* 하지만 객체에서는 Collection을 사용해서 객체 2개로 다대다 관계를 나태낼 수 있다.
+* @ManyToMany 사용 
+* @JoinTable로 연결 테이블 지정 
+* 다대다 매핑: 단방향, 양방향 가능
+
+```java
+//Product
+
+@ManyToMany(mappedBy = "products")
+private List<Member> members = new ArrayList<>();
+```
+```java
+//Member
+
+@ManyToMany
+@JoinTable(name = "MEMBER_PRODUCT") //MEMBER_PRODUCT라는 연결 테이블이 생성됨
+private List<Product> products = new ArrayList<>();
+```
+
+#### 다대다 매핑의 한계
+* 편리해 보이지만 실무에서는 사용해서는 안 된다.
+* 연결 테이블이 단순히 연결만 하고 끝나지 않는다.
+* 매핑 정보만 들어가고 주문시간, 수량같은 필드를 추가할 수 없다.
+* 중간 테이블이 숨겨져 있기 때문에 쿼리가 이상하게 만들어진다.
+
+#### 다대다 한계 극복
+* 연결 테이블용 Entity를 추가한다.
+* @ManyToMany → @OneToMany, @ManyToOne
+
+```java
+//MemberProduct
+
+@Id @GeneratedValue
+private Long id;
+
+@ManyToOne
+@JoinColumn(name = "MEMBER_ID")
+private Member member;
+
+@ManyToOne
+@JoinColumn(name = "PROUDCT_ID")
+private Product product;
+```
+```java
+//Member
+
+@OneToMany(mappedBy = "member")
+private List<MemberProduct> memberProducts = new ArrayList<>();
+```
+```java
+//Product
+
+@OneToMany(mappedBy = "product")
+private List<MemberProduct> memberProducts = new ArrayList<>();
+```
+* 연결 테이블의 PK는 종속 테이블들의 PK들의 복합키로 사용하지 말고 따로 PK를 만들고 FK들은 비식별 관계로 나타낸다.
+* 키가 어딘가에 종속되는 경우 유연성 있게 바꾸기 어렵기 때문
+* 그렇기 때문에 PK 하나만 선언해주는 게 유연성 있게 사용할 수 있다.
+
+#### @JoinColumn
+* 외래 키를 매핑할 때 사용한다.
+
+<table>
+    <tr>
+        <th>속성</th>
+        <th>설명</th>
+        <th>기본값</th>
+    </tr>
+    <tr>
+        <td>name</td>
+        <td>매핑할 외래 키 이름</td>
+        <td>필드명 + _ + 참조하는 테이블의 기본 키 컬럼명</td>
+    </tr>
+    <tr>
+        <td>referencedColumnName</td>
+        <td>외래 키가 참조하는 대상 테이블의 컬럼명</td>
+        <td>참조하는 테이블의 기본 키 컬럼명</td>
+    </tr>
+    <tr>
+        <td>foreignKey(DDL)</td>
+        <td>
+            외래 키 제약조건을 직접 지정할 수 있다. <br>
+            이 속성은 테이블을 생성할 때만 사용한다.
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            unique <br>
+            nullable insertable <br>
+            updatable <br>
+            columnDeﬁnition <br>
+            table <br>
+        </td>
+        <td>@Column의 속성과 같다.</td>
+        <td></td>
+    </tr>
+</table>
+
+#### @ManyToOne
+* 다대일 관계 매핑
+
+<table>
+    <tr>
+        <th>속성</th>
+        <th>설명</th>
+        <th>기본값</th>
+    </tr>
+    <tr>
+        <td>optional</td>
+        <td>false로 설정하면 연관된 엔티티가 항상 있어야 한다.</td>
+        <td>true</td>
+    </tr>
+    <tr>
+        <td>fetch</td>
+        <td>글로벌 페치 전략을 설정한다.</td>
+        <td>
+            @ManyToOne=FetchType.EAGER <br>
+            @OneToMany=FetchType.LAZY
+        </td>
+    </tr>
+    <tr>
+        <td>cascade</td>
+        <td>속성 전이 기능을 사용한다.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>targetEntity</td>
+        <td>연관된 엔티티의 타입 정보를 설정한다. 이 기능은 거의 사용하지 않는다. 컬렉션을 사용해도 제네릭으로 타입 정보를 알 수 있다.</td>
+        <td></td>
+    </tr>
+</table>
+
+#### @OneToMany
+* 다대일 관계 매핑
+
+<table>
+    <tr>
+        <th>속성</th>
+        <th>설명</th>
+        <th>기본값</th>
+    </tr>
+    <tr>
+        <td>mappedBy</td>
+        <td>연관관계의 주인 필드를 선택한다.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>fetch</td>
+        <td>글로벌 페치 전략을 설정한다.</td>
+        <td>
+            @ManyToOne=FetchType.EAGER <br>
+            @OneToMany=FetchType.LAZY
+        </td>
+    </tr>
+    <tr>
+        <td>cascade</td>
+        <td>속성 전이 기능을 사용한다.</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>targetEntity</td>
+        <td>연관된 엔티티의 타입 정보를 설정한다. 이 기능은 거의 사용하지 않는다. 컬렉션을 사용해도 제네릭으로 타입 정보를 알 수 있다.</td>
+        <td></td>
+    </tr>
+</table>
+
+#### FetchType의 LAZY와 EAGER
+* LAZY
+    * 지연로딩
+    * 연관관계가 설정된 테이블에 대해 select를 하지 않는다.
+    * 1:N 과 같이 여러가지 데이터가 로딩이 일어날 경우 사용하는 방식
+* EAGER
+    * 즉시로딩
+    * 연관관계가 설정된 모든 테이블에 대해 조인이 이루어진다.
+    * 1:1 연관관계와 같이 한 건만 존재할 때 사용하는 방식
+
+
+

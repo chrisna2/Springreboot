@@ -56,6 +56,8 @@ public class FreeBoard {
 			   fetch = FetchType.LAZY) 		// 로딩방식 : 즉시로딩 설정(FetchType.EAGER), 지연로딩 설정(FetchType.LAZY : 기본값)
 	private List<FreeBoardReply> replies;
 	
+	// 해당 연관 관계에 따라 tbl_free_replies 테이블에는 board_bno라는 fk가 생성되는 것으로 확인이 가능 하다.
+	
 	/* Mappedby
 	- 자신이 다른 객체에 "메어있다"는 것을 명시
 	- 해당 엔티티가 관계의 주체가 되지 않는다.
