@@ -63,7 +63,8 @@ public interface PDSBoardRepository extends CrudRepository<PDSBoard, Long>{
 	/* 
 		@Query("SELECT p, count(f) "
 				+ "FROM PDSBoard p "
-					+ "LEFT OUTER JOIN p.files f "
+					+ "LEFT OUTER JOIN **p.files f** "
+					// hibernate 문법 : 하나의 엔티티 속성을 이용해서 아웃터 조인을 사용가능
 				+ "WHERE p.pid > 0 "
 				+ "GROUP BY p "
 				+ "ORDER BY pid DESC ")
